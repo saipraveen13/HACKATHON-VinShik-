@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>VinShik Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<style>
+  :root{
+    --bg: #f4f6f8;
+    --surface: #ffffff;
+    --muted: #6b7280;
+    --text: #0f172a;
+    --border: #e5e7eb;
+
+    --sel-bg: #e8fbf5;
+    --sel-border: #c9efe2;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    background:var(--bg);
+    font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color:var(--text);
+    display:flex;
+    align-items:stretch;
+    justify-content:center;
+    padding:14px;
+  }
+
+  /* App frame */
+  .app{
+    width:100%;
+    max-width:1440px;
+    background:var(--surface);
+    border-radius:22px;
+    box-shadow:0 0 0 1px rgba(0,0,0,.04), 0 10px 30px rgba(17,24,39,.06);
+    display:grid;
+    grid-template-columns: 250px 1fr;
+    overflow:hidden;
+  }
+
+  /* Sidebar */
+  .sidebar{
+    background:var(--surface);
+    border-right:1px solid var(--border);
+    padding:22px 14px 18px 22px;
+  }
+  .brand{
+    font-size:30px;
+    font-weight:800;
+    letter-spacing:.2px;
+    margin:2px 0 20px;
+  }
+  .brand .vin{ color:#10b981; }
+  .nav{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    margin-top:10px;
+  }
+  .nav a{
+    display:flex; align-items:center; gap:12px;
+    text-decoration:none;
+    color:#374151;
+    font-weight:600;
+    font-size:14.5px;
+    padding:10px 12px;
+    border-radius:12px;
+    border:1px solid transparent;
+  }
+  .nav a .ico{
+    width:28px;height:28px;
+    display:grid;place-items:center;
+    border-radius:10px;
+    color:#6b7280;
+  }
+  .nav a.active{
+    background:var(--sel-bg);
+    border-color:var(--sel-border);
+  }
+  .nav a.active .ico{
+    background:#dcfaf0;
+    color:#10b981; /* ✅ corrected */
+  }
+
+  /* Main area */
+  .main{
+    background:linear-gradient(#ffffff, #fbfbfb);
+    padding:0;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* Top bar */
+  .topbar{
+    display:flex; align-items:center; justify-content:flex-end;
+    gap:12px;
+    padding:16px 22px;
+    border-bottom:1px solid var(--border);
+  }
+  .dot{
+    width:10px;height:10px;border-radius:50%; background:#10b981;
+    margin-right:auto; margin-left:6px;
+  }
+  .tb-btn{
+    width:36px;height:36px;border-radius:12px;
+    border:1px solid var(--border);
+    background:#fff;
+    display:grid;place-items:center;
+    color:#6b7280;
+  }
+  .avatar{
+    width:38px;height:38px;border-radius:12px; overflow:hidden;
+    border:1px solid var(--border);
+  }
+  .avatar img{width:100%;height:100%;object-fit:cover;}
+
+  /* Content */
+  .content{
+    padding:18px 22px 28px;
+  }
+  .headline{
+    font-size:28px; font-weight:800; letter-spacing:.2px;
+    margin:10px 0 6px 6px;
+  }
+  .sub{
+    color:#8b95a1; font-size:14.5px; margin-left:6px;
+  }
+
+  /* Cards row */
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(4, minmax(240px, 1fr));
+    gap:22px;
+    margin:24px 6px 0;
+  }
+  .card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow:0 8px 18px rgba(15,23,42,.06);
+    padding:16px 18px 14px;
+  }
+  .card-title{
+    font-size:12.8px; color:#6b7280; font-weight:600; margin-bottom:10px;
+  }
+  .row{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+  }
+  .metric{
+    min-width:120px;
+  }
+  .chip{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:12px; font-weight:600; color:#16a34a;
+    background:#eafaf1; padding:6px 8px; border-radius:999px;
+    border:1px solid #d6f1e1;
+    margin-bottom:6px;
+  }
+  .chip.down{ color:#ef4444; background:#fff2f2; border-color:#ffe1e1; }
+  .number{
+    font-size:26px; font-weight:800; color:#111827;
+    letter-spacing:.2px;
+  }
+
+  /* Tiny bar graph */
+  .bars{
+    width:62px; height:32px;
+    display:flex; align-items:flex-end; gap:4px;
+  }
+  .bar{
+    width:5px; border-radius:3px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
+  }
+  .blue  .bar{ background:linear-gradient(180deg, #bfdbfe, #3b82f6); }
+  .orange .bar{ background:linear-gradient(180deg, #fcd34d, #f59e0b); }
+  .green .bar{ background:linear-gradient(180deg, #bbf7d0, #22c55e); }
+  .purple .bar{ background:linear-gradient(180deg, #c4b5fd, #8b5cf6); }
+
+  /* heights */
+  .h1{height:10px} .h2{height:14px} .h3{height:20px}
+  .h4{height:26px} .h5{height:18px}
+
+  /* Responsive */
+  @media (max-width:1200px){
+    .cards{ grid-template-columns:repeat(2, 1fr); }
+  }
+  @media (max-width:700px){
+    .app{ grid-template-columns: 1fr; }
+    .sidebar{ display:none; }
+    .cards{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand"><span class="vin">Vin</span>Shik</div>
+      <nav class="nav">
+        <a class="active" href="#"><span class="ico"><i class="fa-solid fa-house"></i></span>Home</a>
+        <a href="#"><span class="ico"><i class="fa-solid fa-calendar"></i></span>Calendar</a>
+        <a href="#"><span class="ico"><i class="fa-solid fa-map"></i></span>Map</a>
+        <a href="#"><span class="ico"><i class="fa-solid fa-users"></i></span>Clients</a>
+        <a href="#"><span class="ico"><i class="fa-solid fa-briefcase"></i></span>Jobs</a>
+        <a href="#"><span class="ico"><i class="fa-solid fa-heart"></i></span>Quotes</a>
+        <a href="#"><span class="ico"><i class="fa-solid fa-list"></i></span>My Services</a>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <div class="topbar">
+        <span class="dot"></span>
+        <button class="tb-btn" title="Inbox"><i class="fa-regular fa-envelope"></i></button>
+        <button class="tb-btn" title="Settings"><i class="fa-solid fa-gear"></i></button>
+        <div class="avatar"><img src="https://i.pravatar.cc/100?img=5" alt=""></div>
+      </div>
+
+      <div class="content">
+        <h1 class="headline">Welcome back, Julie 👋</h1>
+        <p class="sub">Here’s what you need to focus on today</p>
+
+        <section class="cards">
+          <!-- Card 1 -->
+          <article class="card">
+            <div class="card-title">Active Jobs</div>
+            <div class="row">
+              <div class="metric">
+                <div class="chip"><i class="fa-solid fa-arrow-up"></i> +12.2%</div>
+                <div class="number">43.7k</div>
+              </div>
+              <div class="bars blue">
+                <span class="bar h1"></span>
+                <span class="bar h3"></span>
+                <span class="bar h4"></span>
+                <span class="bar h2"></span>
+                <span class="bar h3"></span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="card">
+            <div class="card-title">Jobs In Progress</div>
+            <div class="row">
+              <div class="metric">
+                <div class="chip down"><i class="fa-solid fa-arrow-down"></i> -31.1%</div>
+                <div class="number">92.3k</div>
+              </div>
+              <div class="bars orange">
+                <span class="bar h2"></span>
+                <span class="bar h4"></span>
+                <span class="bar h3"></span>
+                <span class="bar h5"></span>
+                <span class="bar h4"></span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="card">
+            <div class="card-title">Finished Jobs</div>
+            <div class="row">
+              <div class="metric">
+                <div class="chip"><i class="fa-solid fa-arrow-up"></i> +3.3%</div>
+                <div class="number">66.3k</div>
+              </div>
+              <div class="bars green">
+                <span class="bar h1"></span>
+                <span class="bar h2"></span>
+                <span class="bar h4"></span>
+                <span class="bar h3"></span>
+                <span class="bar h4"></span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 4 -->
+          <article class="card">
+            <div class="card-title">New Leads</div>
+            <div class="row">
+              <div class="metric">
+                <div class="chip"><i class="fa-solid fa-arrow-up"></i> +31.1%</div>
+                <div class="number">92.3k</div>
+              </div>
+              <div class="bars purple">
+                <span class="bar h2"></span>
+                <span class="bar h5"></span>
+                <span class="bar h4"></span>
+                <span class="bar h3"></span>
+                <span class="bar h4"></span>
+              </div>
+            </div>
+          </article>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
